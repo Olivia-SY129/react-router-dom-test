@@ -34,7 +34,7 @@ if you want to avoid duplicated page, add 'exact' props
 ```
 
 ## Dynamic routing
-  1. Use id
+  1. Use id  
     - add :id after path  
     - then in profile page, use props.match.params.id to get it's id.  
     following is props object </br>
