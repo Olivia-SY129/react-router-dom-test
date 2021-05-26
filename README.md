@@ -1,70 +1,183 @@
-# Getting Started with Create React App
+# react-router-dom
+- It is not official packaged by Facebook.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. Installation
+```cmd
+npm i react-router-dom
+```
 
-## Available Scripts
+2. Basic Routing
+Import BrowserRouter and Route from react-router-dom
 
-In the project directory, you can run:
+```js
+import { BrowserRouter, Route } from 'react-router-dom';
+```
 
-### `npm start`
+then add Route components (pages)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```js
+function App() {
+  return (
+    <BrowserRouter>
+      <Route path = "/" component = { Home } />
+      <Route path = "/profile" component = { Profile } />
+      <Route path = "/about" component = { About } />
+    </BrowserRouter>
+  );
+};
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+if you want to avoid duplicated page, add 'exact' props
 
-### `npm test`
+```js
+<Route path = "/" exact component = { Home } />    
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Dynamic routing
+  1. Use id
+    - add :id after path
+    
+    ```js
+    function App() {
+      return (
+        <BrowserRouter>
+          <Route path = "/" exact component = { Home } />
+          <Route path = "/profile" exact component = { Profile } />
+          <Route path = "/profile/:id" component = { Profile } />
+          <Route path = "/about" component = { About } />
+        </BrowserRouter>
+      );
+    };
+    ```
+    - then in profile page, use props.match.params.id to get it's id.
+    following is props object
+    ![image](https://user-images.githubusercontent.com/81205807/119598407-d9a91d00-be1d-11eb-8959-6a936a59464b.png)
 
-### `npm run build`
+    
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Use ?key=[value]
+    - No need to add route component
+    - Use props.location.search to get path
+    ![image](https://user-images.githubusercontent.com/81205807/119598612-3c9ab400-be1e-11eb-81e8-d2493a5ade8a.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    - How to get value
+      1. URLSearchParams (WebAPI)
+        - use method get() to obtain value
+        - but not supported in IE
+        
+      2. query-string module
+        - installation
+          ```cmd
+          npm i query-string
+          ```
+          
+        - import query-string to page you want to use value
+          ```js
+          import queryString from 'query-string';
+          ```
+          
+          then use query.[name of value]
+        
+  
+    
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Switch component
+  - Show the first Route component that matches path
+  - Browser can show Not Found page if there is no matching path
+  - No need to add 'exact' props
+  
+  import switch component
+  ```js
+  import Switch from 'react-router-dom';
+  ```
+  then wrap Route components to switch with Switch component
+  
+  ```js
+  <Switch>
+        <Route path = "/profile/:id" component = { Profile } />
+        <Route path = "/profile" component = { Profile } />
+        <Route path = "/about" component = { About } />
+        <Route path = "/" exact component = { Home } />
+        <Route component = { NotFound } />
+  </Switch>
+  ```
+  
+  DON'T FORGET TO ADD exact PROPS IN ROOT PATH to get 'Not Found' page
+  
+## Link component
+  - import Link component, then use it where you want
 
-### `npm run eject`
+  ```js
+  <Link to="/">Home</Link>
+  ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## NavLink component
+  - able to style active link
+  - you must use exact props to avoid duplication
+  - you must use inActive props in component with query-string
+    - isActive props has methods called 'match' and 'location'
+    - 'match' exempts page without isActive props (where match === null)
+    - location.search to get the path of a page with query-string
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+<NavLink 
+          to="/about?name=olivia" 
+          activeStyle={activeStyle}
+          isActive={(match, location) => {
+            console.log(location);
+            return match !== null && location.search === '?name=olivia';
+          }}>
+          About?name=olivia
+</NavLink>
+```
+  
+## Alternative of <a> element without reload
+  - props.history.push(path)
+  
+  ```js
+    export default function Login(props) {
+    function login() {
+      setTimeout(() => {
+        //페이지를 이동
+        props.history.push('/');
+      }, 1000); // setTimtout() is to demonstrate loading time
+    }
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+    return (
+      <div>
+        <h2>Login page</h2>
+        <button onClick={ login }>Sign In</button>
+      </div>
+      )
+     }
+  ```
+  
+## WithRouter component
+  - Bring props in different component
+  - import WithRouter and wrap a component to use props
+  
+```js
+ export default withRouter(function LoginBtn(props) {
+  console.log(props);
+  function login() {
+    setTimeout(() => {
+      props.history.push('/');
+    }, 1000);
+  }
+  return (
+    <button onClick={login}>Sign In</button>
+  )
+})
+```
+  
+## Redireact component   
+  - when rendered, redirect to path of to props
+  
+  ```js
+  const isLogin = true;
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  <Route 
+    path="/login" 
+    render={() => isLogin ? <Redirect to="/" /> : <Login />} 
+  />
+  ```
