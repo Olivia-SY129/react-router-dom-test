@@ -50,14 +50,14 @@ if you want to avoid duplicated page, add 'exact' props
     };
     ```
     - then in profile page, use props.match.params.id to get it's id.
-    following is props object
+    following is props object </br>
     ![image](https://user-images.githubusercontent.com/81205807/119598407-d9a91d00-be1d-11eb-8959-6a936a59464b.png)
 
     
 
  2. Use ?key=[value]
     - No need to add route component
-    - Use props.location.search to get path
+    - Use props.location.search to get path </br>
     ![image](https://user-images.githubusercontent.com/81205807/119598612-3c9ab400-be1e-11eb-81e8-d2493a5ade8a.png)
 
     - How to get value
