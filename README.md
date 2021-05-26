@@ -35,8 +35,8 @@ if you want to avoid duplicated page, add 'exact' props
 
 ## Dynamic routing
   1. Use id
-    - add :id after path
-    - then in profile page, use props.match.params.id to get it's id.
+    - add :id after path  
+    - then in profile page, use props.match.params.id to get it's id.  
     following is props object </br>
     ![image](https://user-images.githubusercontent.com/81205807/119598407-d9a91d00-be1d-11eb-8959-6a936a59464b.png)
     
